@@ -33,14 +33,14 @@ public class App
                 thread.start();
             }
 
-            Thread.sleep(300);
+            Thread.sleep(200);
 
             int sum = 0;
             for(Customer customer : customers){
-                sum += customer.getNumberOfPurchasedGoods();
+                sum += customer.getSumOfGoods();
             }
-            System.out.println(sum);
-            System.out.println(store.getGoods());
+            System.out.println("Всего куплено товаров " + sum);
+            System.out.println("Товаров осталось в магазине " + store.getGoods());
         }
     }
 }

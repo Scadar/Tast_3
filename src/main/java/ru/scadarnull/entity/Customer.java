@@ -4,24 +4,21 @@ public class Customer implements Runnable{
 
     private String name;
     private Store store;
-    private int numberOfPurchasedGoods;
+    private int sumOfGoods;
+    private int numberOfPurchased;
     private boolean isActive;
 
     public Customer(String name, Store store) {
         this.name = name;
         this.store = store;
         this.isActive = true;
-        this.numberOfPurchasedGoods = 0;
+        this.sumOfGoods = 0;
+        this.numberOfPurchased = 0;
     }
 
     public void buy(){
         int random = 1 + (int)(Math.random() * 10);
-        int result = store.sell(random);
-        if(result == -1){
-            isActive = false;
-        }else{
-            numberOfPurchasedGoods += result;
-        }
+        store.sell(random, this);
     }
 
     @Override
@@ -33,10 +30,26 @@ public class Customer implements Runnable{
     }
 
     private void info(){
-        System.out.println(name + " купил " + numberOfPurchasedGoods);
+        System.out.println(name + " купил " + sumOfGoods + " кол-во " + numberOfPurchased);
     }
 
-    public int getNumberOfPurchasedGoods() {
-        return numberOfPurchasedGoods;
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public int getNumberOfPurchased() {
+        return numberOfPurchased;
+    }
+
+    public void setNumberOfPurchased(int numberOfPurchased) {
+        this.numberOfPurchased = numberOfPurchased;
+    }
+
+    public void addToSumOfGoods(int goods) {
+        sumOfGoods += goods;
+    }
+
+    public int getSumOfGoods() {
+        return sumOfGoods;
     }
 }
