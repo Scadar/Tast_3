@@ -12,28 +12,30 @@ import java.util.List;
  */
 public class App 
 {
+    public static int NUMBER_OF_CUSTOMERS;
+
     public static void main( String[] args ) throws InterruptedException {
         if(args.length < 1){
             System.out.println("Неверные аргументы программы");
         }else{
-            int numberOfCustomer = Integer.parseInt(args[0]);
+            try {
+                NUMBER_OF_CUSTOMERS = Integer.parseInt(args[0]);
+            }catch (NumberFormatException ex){
+                System.out.println("Неверные аргументы программы, введите число");
+                return;
+            }
             Store store = new Store(1000);
             List<Customer> customers = new ArrayList<>();
             List<Thread> threads = new ArrayList<>();
-
-            for(int i = 0; i < numberOfCustomer; ++i){
+            for(int i = 0; i < NUMBER_OF_CUSTOMERS; ++i){
                 customers.add(new Customer("Покупатель " + i, store));
-            }
-
-            for(Customer customer : customers){
-                threads.add(new Thread(customer));
+                threads.add(new Thread(customers.get(i)));
+                threads.get(i).start();
             }
 
             for(Thread thread : threads){
-                thread.start();
+                thread.join();
             }
-
-            Thread.sleep(200);
 
             int sum = 0;
             for(Customer customer : customers){
@@ -41,6 +43,7 @@ public class App
             }
             System.out.println("Всего куплено товаров " + sum);
             System.out.println("Товаров осталось в магазине " + store.getGoods());
+
         }
     }
 }

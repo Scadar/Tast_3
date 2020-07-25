@@ -37,19 +37,15 @@ public class Customer implements Runnable{
         isActive = active;
     }
 
-    public int getNumberOfPurchased() {
-        return numberOfPurchased;
-    }
-
-    public void setNumberOfPurchased(int numberOfPurchased) {
-        this.numberOfPurchased = numberOfPurchased;
-    }
-
     public void addToSumOfGoods(int goods) {
         sumOfGoods += goods;
     }
 
     public int getSumOfGoods() {
         return sumOfGoods;
+    }
+
+    public void incNumberOfPurchased() {
+        numberOfPurchased++;
     }
 }

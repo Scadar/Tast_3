@@ -1,5 +1,7 @@
 package ru.scadarnull.entity;
 
+import ru.scadarnull.App;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Store {
@@ -20,17 +22,20 @@ public class Store {
         }
 
         if(numberOfGoods > goods.get()){
-            int temp = goods.get();
-            goods.addAndGet(-temp);
-            customer.addToSumOfGoods(temp);
+            if(goods.get() != 0){
+                int temp = goods.get();
+                goods.addAndGet(-temp);
+                customer.addToSumOfGoods(temp);
+                customer.incNumberOfPurchased();
+            }
         }else{
             goods.addAndGet(-numberOfGoods);
             customer.addToSumOfGoods(numberOfGoods);
+            customer.incNumberOfPurchased();
         }
-        customer.setNumberOfPurchased(customer.getNumberOfPurchased() + 1);
 
         counter++;
-        if(counter < 5){
+        if(counter < App.NUMBER_OF_CUSTOMERS){
             try {
                 wait();
             } catch (InterruptedException e) {
