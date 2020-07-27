@@ -1,5 +1,7 @@
 package ru.scadarnull.entity;
 
+import java.util.concurrent.Phaser;
+
 public class Customer implements Runnable{
 
     private String name;
@@ -7,13 +9,15 @@ public class Customer implements Runnable{
     private int sumOfGoods;
     private int numberOfPurchased;
     private boolean isActive;
+    private Phaser phaser;
 
-    public Customer(String name, Store store) {
+    public Customer(String name, Store store, Phaser phaser) {
         this.name = name;
         this.store = store;
         this.isActive = true;
         this.sumOfGoods = 0;
         this.numberOfPurchased = 0;
+        this.phaser = phaser;
     }
 
     public void buy(){
@@ -25,7 +29,9 @@ public class Customer implements Runnable{
     public void run() {
         while (isActive){
             buy();
+            phaser.arriveAndAwaitAdvance();
         }
+        phaser.arriveAndDeregister();
         info();
     }
 
@@ -48,4 +54,5 @@ public class Customer implements Runnable{
     public void incNumberOfPurchased() {
         numberOfPurchased++;
     }
+
 }
