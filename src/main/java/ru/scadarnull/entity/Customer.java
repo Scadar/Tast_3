@@ -1,6 +1,7 @@
 package ru.scadarnull.entity;
 
-import java.util.concurrent.Phaser;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 public class Customer implements Runnable{
 
@@ -9,30 +10,39 @@ public class Customer implements Runnable{
     private int sumOfGoods;
     private int numberOfPurchased;
     private boolean isActive;
-    private Phaser phaser;
+    private CyclicBarrier cyclicBarrier;
 
-    public Customer(String name, Store store, Phaser phaser) {
+    public Customer(String name, Store store, CyclicBarrier cyclicBarrier) {
         this.name = name;
         this.store = store;
         this.isActive = true;
         this.sumOfGoods = 0;
         this.numberOfPurchased = 0;
-        this.phaser = phaser;
+        this.cyclicBarrier = cyclicBarrier;
     }
 
     public void buy(){
         int random = 1 + (int)(Math.random() * 10);
-        store.sell(random, this);
+        int goods = store.sell(random);
+        if(goods == -1){
+            setActive(false);
+        }else{
+            sumOfGoods += goods;
+            numberOfPurchased++;
+        }
     }
 
     @Override
     public void run() {
         while (isActive){
             buy();
-            phaser.arriveAndAwaitAdvance();
+            try {
+                cyclicBarrier.await();
+            } catch (InterruptedException | BrokenBarrierException ignored) {
+            }
         }
-        phaser.arriveAndDeregister();
         info();
+        cyclicBarrier.reset();
     }
 
     private void info(){
@@ -43,16 +53,8 @@ public class Customer implements Runnable{
         isActive = active;
     }
 
-    public void addToSumOfGoods(int goods) {
-        sumOfGoods += goods;
-    }
-
     public int getSumOfGoods() {
         return sumOfGoods;
-    }
-
-    public void incNumberOfPurchased() {
-        numberOfPurchased++;
     }
 
 }

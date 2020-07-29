@@ -10,21 +10,19 @@ public class Store {
         this.goods = new AtomicInteger(goods);
     }
 
-    public synchronized void sell(int numberOfGoods, Customer customer){
+    public synchronized int sell(int numberOfGoods){
         if(goods.get() == 0){
-            customer.setActive(false);
-            return;
+            return -1;
         }
 
         if(numberOfGoods > goods.get()){
             int temp = goods.get();
             goods.addAndGet(-temp);
-            customer.addToSumOfGoods(temp);
+            return temp;
         }else{
             goods.addAndGet(-numberOfGoods);
-            customer.addToSumOfGoods(numberOfGoods);
+            return numberOfGoods;
         }
-        customer.incNumberOfPurchased();
     }
 
     public AtomicInteger getGoods() {

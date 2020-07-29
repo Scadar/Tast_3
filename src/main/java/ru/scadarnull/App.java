@@ -6,6 +6,7 @@ import ru.scadarnull.entity.Store;
 import java.lang.ref.PhantomReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Phaser;
 
 /**
@@ -26,12 +27,12 @@ public class App
                 System.out.println("Неверные аргументы программы, введите число");
                 return;
             }
-            Phaser phaser = new Phaser(NUMBER_OF_CUSTOMERS);
+            CyclicBarrier cyclicBarrier = new CyclicBarrier(NUMBER_OF_CUSTOMERS);
             Store store = new Store(1000);
             List<Customer> customers = new ArrayList<>();
             List<Thread> threads = new ArrayList<>();
             for(int i = 0; i < NUMBER_OF_CUSTOMERS; ++i){
-                customers.add(new Customer("Покупатель " + i, store, phaser));
+                customers.add(new Customer("Покупатель " + i, store, cyclicBarrier));
                 threads.add(new Thread(customers.get(i)));
                 threads.get(i).start();
             }
